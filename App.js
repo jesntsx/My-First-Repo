@@ -1,87 +1,56 @@
-// App.js
-import React, { useState } from "react";
-import { SafeAreaView, View, Text, TextInput, TouchableOpacity, FlatList } from "react-native";
+import React from 'react';
+import {View, FlatList, StyleSheet, Text, StatusBar} from 'react-native';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
-export default function App() {
-  const [messages, setMessages] = useState([
-    { id: "1", text: "Hello! 👋", sender: "other" },
-    { id: "2", text: "Hi! How are you?", sender: "me" },
-  ]);
-  const [input, setInput] = useState("");
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+];
 
-  const sendMessage = () => {
-    if (input.trim() === "") return;
+type ItemProps = {title: string};
 
-    const newMessage = {
-      id: Date.now().toString(),
-      text: input,
-      sender: "me",
-    };
+const Item = ({title}: ItemProps) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{title}</Text>
+  </View>
+);
 
-    setMessages([...messages, newMessage]);
-    setInput("");
-  };
-
-  const renderItem = ({ item }) => (
-    <View
-      style={{
-        alignSelf: item.sender === "me" ? "flex-end" : "flex-start",
-        backgroundColor: item.sender === "me" ? "#0084ff" : "#e5e5ea",
-        borderRadius: 20,
-        margin: 5,
-        padding: 10,
-        maxWidth: "70%",
-      }}
-    >
-      <Text style={{ color: item.sender === "me" ? "#fff" : "#000" }}>{item.text}</Text>
-    </View>
-  );
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
+const App = () => (
+  <SafeAreaProvider>
+    <SafeAreaView style={styles.container}>
       <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={{ padding: 10 }}
+        data={DATA}
+        renderItem={({item}) => <Item title={item.title} />}
+        keyExtractor={item => item.id}
       />
-
-      {/* Input Field */}
-      <View
-        style={{
-          flexDirection: "row",
-          padding: 10,
-          borderTopWidth: 1,
-          borderColor: "#ccc",
-          backgroundColor: "#fff",
-        }}
-      >
-        <TextInput
-          style={{
-            flex: 1,
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 20,
-            paddingHorizontal: 15,
-            marginRight: 10,
-          }}
-          placeholder="Type a message..."
-          value={input}
-          onChangeText={setInput}
-        />
-        <TouchableOpacity
-          onPress={sendMessage}
-          style={{
-            backgroundColor: "#0084ff",
-            borderRadius: 20,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Send</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
-  );
-}
+  </SafeAreaProvider>
+);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
+  },
+});
+
+export default App;
